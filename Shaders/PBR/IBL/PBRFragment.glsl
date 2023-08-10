@@ -103,18 +103,23 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 vec3 OrenNayar(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNormal, float roughness, vec3 albedo)
 {
-    float LdotV = dot(lightDirection, viewDirection);
-    float NdotL = dot(lightDirection, surfaceNormal);
-    float NdotV = dot(surfaceNormal, viewDirection);
+    float NdotV   = clamp(dot(surfaceNormal, viewDirection), 0.0, 1.0);
+	float angleVN = acos(NdotV);
+	float NdotL   = clamp(dot(surfaceNormal, lightDirection), 0.0, 1.0);
+    float angleLN = acos(NdotL);
 
-    float s = LdotV - NdotL * NdotV;
-    float t = mix(1.0, max(NdotL, NdotV), step(0.0, s));
+	float alpha = max(angleVN, angleLN);
+    float beta = min(angleVN, angleLN);
+	float gamma = cos(angleVN - angleLN);
 
-    float sigma2 = roughness * roughness;
-    float A = 1.0 + sigma2 * (albedo.x / (sigma2 + 0.13) + 0.5 / (sigma2 + 0.33));
-    float B = 0.45 * sigma2 / (sigma2 + 0.09);
+    float roughness2 = roughness * roughness;
 
-    return albedo * max(0.0, NdotL) * (A + B * s / t) / PI;
+	float A = 1.0 - 0.5 * (roughness2 / (roughness2 + 0.57));
+    float B = 0.45 * (roughness2 / (roughness2 + 0.09));
+	float C = sin(alpha) * tan(beta);
+
+    vec3 diffuse = albedo * (NdotL * (A + ((B * max(0.0, gamma)) * C))) / PI;
+    return diffuse;
 }
 
 vec4 PBR()
@@ -159,7 +164,7 @@ vec4 PBR()
 
         if(isUsingPhongModel == 2)
         {
-           Lo += (kD * vec3(1.0)/PI + specular) * radiance * OrenNayar(lightDirVector, viewDirVector, normalVector, roughness, albedo);
+		    Lo += (kD * OrenNayar(lightDirVector, viewDirVector, normalVector, roughness, albedo) + specular) * radiance * normalLightVectorsCosAngle;
         }
         else
         {

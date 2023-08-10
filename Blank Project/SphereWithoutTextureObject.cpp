@@ -37,7 +37,7 @@ void SphereWithoutTextureObject::HandleTextureEvents()
 
 void SphereWithoutTextureObject::ImGuiRender(bool shouldShow)
 {
-	if (!renderer->GetCurrentModel())
+	if (!renderer->GetCurrentModel() || renderer->GetCurrentModel() == 2)
 	{
 		ImGui::Begin("Sphere Object without texture");
 		ImGui::SliderFloat(" Roughness", &roughnessValue, 0.05f, 1.0f);
