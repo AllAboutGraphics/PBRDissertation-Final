@@ -26,9 +26,11 @@ class LightObjects : public ObjectRepresentable
 		Vector4			   lightsOffsetVector[MAX_LIGHTS];
 		Vector4			   lightColours[MAX_LIGHTS];
 		Vector4			   lightBasePositions[MAX_LIGHTS];
-		const Vector4      defaultLightColour	 = Vector4(0.96f, 0.93f, 0.83f, 1.0f);
-		const float		   lightFactor			 = 300.0f;
-		float			   specularityPower		 = 60.0f;
+		const Vector4      defaultLightColour			= Vector4(0.96f, 0.93f, 0.83f, 1.0f);
+		const float		   defaultRadius				= 10.0f;
+		const float		   defaultRadiusForCloserLights = 5.0f;
+		const float		   lightFactor					= 300.0f;
+		float			   specularityPower				= 60.0f;
 
 		//unsigned int	   lightsUBO;
 		UniformBufferObject* lightUBO;

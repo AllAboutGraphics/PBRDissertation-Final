@@ -96,24 +96,27 @@ void LightObjects::ImGuiRender(bool shouldShow)
 
 void LightObjects::InstantiateLightPositionsAndColours()
 {
-	const Vector4 basePositions[MAX_LIGHTS] = {	Vector4(-10.0f,  10.0f, 10.0f, 0.0f), 
-												Vector4( 10.0f,  10.0f, 10.0f, 0.0f),
-												Vector4(-10.0f, -10.0f, 10.0f, 0.0f),
-												Vector4( 10.0f, -10.0f, 10.0f, 0.0f),
-												Vector4( -5.0f,  -8.0f,  2.0f, 0.0f),
-												Vector4( -5.0f,   0.0f,  2.0f, 0.0f) };
+	float leftX = -12.0f;
+	float topY  =  2.0f;
+	float gap	=  12.0f;
+	const Vector4 basePositions[MAX_LIGHTS] = { Vector4(leftX,		 topY,		 10.0f, 0.0f),
+												Vector4(leftX + gap, topY,		 10.0f, 0.0f),
+												Vector4(leftX,		 topY - gap, 10.0f, 0.0f),
+												Vector4(leftX + gap, topY - gap, 10.0f, 0.0f),
+												Vector4(-5.0f,		 -8.0f,		  2.0f, 0.0f),
+												Vector4(-5.0f,		 -2.0f,		  2.0f, 0.0f) };
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
 		lightColours[i]		  = defaultLightColour;
 		lightBasePositions[i] = basePositions[i];
 		lightsOffsetVector[i] = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
-	light[0] = new Light(lightBasePositions[0], defaultLightColour * lightFactor, 15.0f, 1.0f);
-	light[1] = new Light(lightBasePositions[1], defaultLightColour * lightFactor, 15.0f, 1.0f);
-	light[2] = new Light(lightBasePositions[2], defaultLightColour * lightFactor, 15.0f, 1.0f);
-	light[3] = new Light(lightBasePositions[3], defaultLightColour * lightFactor, 15.0f, 1.0f);
-	light[4] = new Light(lightBasePositions[4], defaultLightColour * lightFactor,  5.0f, 1.0f);	//Bottom
-	light[5] = new Light(lightBasePositions[5], defaultLightColour * lightFactor, 5.0f, 1.0f);	//Top
+	light[0] = new Light(lightBasePositions[0], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[1] = new Light(lightBasePositions[1], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[2] = new Light(lightBasePositions[2], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[3] = new Light(lightBasePositions[3], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[4] = new Light(lightBasePositions[4], defaultLightColour * lightFactor, defaultRadiusForCloserLights, 1.0f);	//Bottom
+	light[5] = new Light(lightBasePositions[5], defaultLightColour * lightFactor, defaultRadiusForCloserLights, 1.0f);	//Top
 }
 
 void LightObjects::ToggleLight(int index)
@@ -135,6 +138,7 @@ void LightObjects::ResetLights()
 		lightsOffsetVector[i] = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 		lightColours[i] = defaultLightColour;
 		light[i]->SetColour(defaultLightColour);
+		light[i]->SetRadius(MAX_LIGHTS - i > 2 ? defaultRadius : defaultRadiusForCloserLights);
 		moveLights = false;
 	}
 }
