@@ -16,6 +16,7 @@ class LightObjects : public ObjectRepresentable
 		void HandleEvents();
 		void UpdateShaderReference(Shader* shaderRef) { shader = shaderRef; }
 		void ImGuiRender(bool shouldShow = true) override;
+		void HandleTextureEvents() override;
 
 	private:
 		Mesh*			   lightSphereMesh;

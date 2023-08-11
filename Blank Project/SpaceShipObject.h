@@ -23,7 +23,7 @@ class SpaceShipObject : public ObjectRepresentable
 		SpaceShipObject(Renderer* rendererDelegate, Shader* boundShader);
 		~SpaceShipObject();
 		void Draw(Vector3 translateBy = Vector3(0.0f, 0.0f, 0.0f));
-		void HandleTextureEvents();
+		void HandleTextureEvents() override;
 		void UpdateAutoRotate(bool shouldRotate);
 		void SetToDefaults();
 		void ImGuiRender(bool shouldShow = true) override;

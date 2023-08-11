@@ -49,3 +49,7 @@ void SphereObjectsGrid::DrawSphereMaterial(float metallicValue, float roughnessV
 void SphereObjectsGrid::ImGuiRender(bool shouldShow)
 {
 }
+
+void SphereObjectsGrid::HandleTextureEvents()
+{
+}

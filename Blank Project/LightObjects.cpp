@@ -94,6 +94,10 @@ void LightObjects::ImGuiRender(bool shouldShow)
 	}
 }
 
+void LightObjects::HandleTextureEvents()
+{
+}
+
 void LightObjects::InstantiateLightPositionsAndColours()
 {
 	float leftX = -12.0f;

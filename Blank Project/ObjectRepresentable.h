@@ -11,4 +11,5 @@ class ObjectRepresentable
 		virtual ~ObjectRepresentable() {}
 
 		virtual void ImGuiRender(bool shouldShow = true) {}
+		virtual void HandleTextureEvents() {}
 };
