@@ -4,7 +4,7 @@ UniformBufferObject::UniformBufferObject(std::vector<Shader*> linkedShadersList,
 {
 	for (Shader* shader : linkedShadersList)
 	{
-		unsigned int programLocation = glGetUniformBlockIndex(shader->GetProgram(), "LightsData");
+		unsigned int programLocation = glGetUniformBlockIndex(shader->GetProgram(), blockName.c_str());
 		glUniformBlockBinding(shader->GetProgram(), programLocation, blockBindingId);
 	}
 	glGenBuffers(1, &uboID);
