@@ -84,12 +84,9 @@ void Renderer::UpdateScene(float dt)
 {
 	HandleRenderObjectEvents();
 	lightObjects->HandleEvents();
-	if		(currentObject == Objects::Sphere)				 { sphereObject->HandleTextureEvents();    }
-	else if (currentObject == Objects::SpaceShip)			 { spaceShipObject->HandleTextureEvents(); }
-	else if (currentObject == Objects::SphereWithoutTexture) { sphereWithoutTextureObject->HandleTextureEvents(); }
+	currentSelectedObject->HandleTextureEvents();
 	camera->UpdateCamera(dt, currentSelectedObject == sphereGrid || currentObject == All);
 	viewMatrix = camera->BuildViewMatrix();
-	// Updating camera position in the fragment shader
 	if (currentObject == Objects::SphereGrid || currentObject == Objects::SphereWithoutTexture) { BindShader(instance->GetShader(SceneShaders::PBRWithoutTextureShader)); }
 	else { BindShader(instance->GetShader(SceneShaders::PbrShader)); }
 	

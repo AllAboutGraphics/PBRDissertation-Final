@@ -16,12 +16,13 @@ class LightObjects : public ObjectRepresentable
 		void HandleEvents();
 		void UpdateShaderReference(Shader* shaderRef) { shader = shaderRef; }
 		void ImGuiRender(bool shouldShow = true) override;
+		void HandleTextureEvents() override;
 
 	private:
 		Mesh*			   lightSphereMesh;
 		Shader*			   shader;
 		Renderer*		   renderer;
-		Light*			   light[MAX_LIGHTS];
+		Light			   light[MAX_LIGHTS];
 		bool			   moveLights = false;
 		Vector4			   lightsOffsetVector[MAX_LIGHTS];
 		Vector4			   lightColours[MAX_LIGHTS];

@@ -5,11 +5,9 @@
 
 struct LightData
 {
-	//Vector4 isLightOn;
 	Vector4 lightSwitchAndRadius;		//On/Off->X and radius -> Y
 	Vector4 position;
 	Vector4	colour;
-	//Vector4 radius;
 };
 
 class Light
@@ -39,6 +37,8 @@ class Light
 
 		bool GetIsLightOn()						  { return lightData.lightSwitchAndRadius.x != 0.0f; }
 		void SetIsLightOn(const float& islightOn) { lightData.lightSwitchAndRadius.x = islightOn; }
+
+		Vector4& GetLightSwitchAndRadius()		  { return lightData.lightSwitchAndRadius; }
 
 	protected:
 		LightData lightData;

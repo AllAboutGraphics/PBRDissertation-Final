@@ -10,7 +10,7 @@ class SphereWithoutTextureObject : public ObjectRepresentable
 		SphereWithoutTextureObject(Renderer* rendererDelegate, Shader* boundShader);
 		~SphereWithoutTextureObject();
 		void DrawSphere();
-		void HandleTextureEvents();
+		void HandleTextureEvents() override;
 		void ImGuiRender(bool shouldShow) override;
 
 	private:

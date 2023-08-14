@@ -11,6 +11,7 @@ class SphereObjectsGrid : public ObjectRepresentable
 		void DrawSpheres();
 		void DrawSphereMaterial(float metallicValue, float roughnessValue, Matrix4 transformationMatrix);
 		void ImGuiRender(bool shouldShow) override;
+		void HandleTextureEvents() override;
 
 	private:
 		Mesh*	  sphere;

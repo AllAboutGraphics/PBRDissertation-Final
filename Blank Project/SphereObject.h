@@ -24,7 +24,7 @@ class SphereObject : public ObjectRepresentable
 		~SphereObject();
 		void DrawSphere();
 		void DrawAllSpheres();
-		void HandleTextureEvents();
+		void HandleTextureEvents() override;
 		void ImGuiRender(bool shouldShow = true) override;
 
 	private:

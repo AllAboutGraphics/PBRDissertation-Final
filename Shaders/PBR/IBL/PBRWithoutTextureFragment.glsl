@@ -18,11 +18,9 @@ uniform sampler2D   brdfLUT;
 // lights
 struct LightData
 {
-//    vec4 isLightOn;
     vec4 lightSwitchAndRadius;
     vec4 lightPositions;
     vec4 lightColors;
-//    vec4 lightRadius;
 };
 
 layout(std140) uniform LightsData
