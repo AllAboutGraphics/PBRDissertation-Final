@@ -22,7 +22,7 @@ class LightObjects : public ObjectRepresentable
 		Mesh*			   lightSphereMesh;
 		Shader*			   shader;
 		Renderer*		   renderer;
-		Light*			   light[MAX_LIGHTS];
+		Light			   light[MAX_LIGHTS];
 		bool			   moveLights = false;
 		Vector4			   lightsOffsetVector[MAX_LIGHTS];
 		Vector4			   lightColours[MAX_LIGHTS];
@@ -43,5 +43,4 @@ class LightObjects : public ObjectRepresentable
 		void SetLightColour();
 		void DrawLightColourSlider();
 		void DrawLightAttenuationSlider();
-		void UploadLightsDataToGPU();
 };

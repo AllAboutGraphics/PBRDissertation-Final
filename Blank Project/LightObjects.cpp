@@ -10,19 +10,10 @@ LightObjects::LightObjects(Renderer* rendererDelegate, Shader* boundShader) : re
 
 LightObjects::~LightObjects()
 {
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
-		delete light[i];
-	}
+	
 }
 
-//struct NewLightStruct
-//{
-//	Vector4 lightSwitchAndRadius[MAX_LIGHTS];
-//	Vector4 lightPositions[MAX_LIGHTS];
-//	Vector4 lightColors[MAX_LIGHTS];
-//};
-//NewLightStruct newLightData;
+
 void LightObjects::Draw()
 {
 	static float acceleration = 0.0f;
@@ -32,27 +23,17 @@ void LightObjects::Draw()
 	{
 		renderer->BindShaderDelegate(shader);
 		Vector4		lightPosition = lightBasePositions[i] + lightsOffsetVector[i] + Vector4((moveLights ? sin(acceleration * 0.01f) * 10.0f : 0.0f), 0.0f, 0.0f, 0.0f);
-		light[i]->SetPosition(lightPosition);
+		light[i].SetPosition(lightPosition);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "isUsingPhongModel"), renderer->GetCurrentModel());
 		glUniform1f(glGetUniformLocation(shader->GetProgram(), "specularityPower"), specularityPower);
 		
-		//lightUBO->UploadData(&light[i][0], sizeof(LightData), i * sizeof(LightData));
-		if (light[i]->GetIsLightOn())
+		if (light[i].GetIsLightOn())
 		{
 			DrawLightObject(Matrix4::Translation(lightPosition.ToVector3()) * Matrix4::Scale(Vector3(0.5f, 0.5f, 0.5f)), lightColours[i]);
 		}
 	}
 	
-	/*int idx = 0;
-	for (Light* lgt : light)
-	{
-		newLightData.lightPositions[idx] = lgt->GetPosition();
-		newLightData.lightColors[idx] = lgt->GetColour();
-		newLightData.lightSwitchAndRadius[idx] = lgt->GetLightSwitchAndRadius();
-		idx++;
-	}
-	lightUBO->UploadData(&newLightData, sizeof(newLightData), 0);*/
-	UploadLightsDataToGPU();
+	lightUBO->UploadData(&light[0], MAX_LIGHTS * sizeof(LightData), 0);
 }
 
 void LightObjects::DrawLightObject(Matrix4 transformationMatrix, Vector4 currLightColour)
@@ -87,17 +68,17 @@ void LightObjects::ImGuiRender(bool shouldShow)
 		ImGui::SameLine();
 		ImGui::Text(" Or use 'L' to to toggle between stationary and moving lights.");
 
-		if (ImGui::Button(light[0]->GetIsLightOn() ? "Turn Light 1 off" : "Turn Light 1 on")) { ToggleLight(0); }
+		if (ImGui::Button(light[0].GetIsLightOn() ? "Turn Light 1 off" : "Turn Light 1 on")) { ToggleLight(0); }
 		DrawIMGuiLightOffsetSlider(0, "Light 1 Offset");
-		if (ImGui::Button(light[1]->GetIsLightOn() ? "Turn Light 2 off" : "Turn Light 2 on")) { ToggleLight(1); }
+		if (ImGui::Button(light[1].GetIsLightOn() ? "Turn Light 2 off" : "Turn Light 2 on")) { ToggleLight(1); }
 		DrawIMGuiLightOffsetSlider(1, "Light 2 Offset");
-		if (ImGui::Button(light[2]->GetIsLightOn() ? "Turn Light 3 off" : "Turn Light 3 on")) { ToggleLight(2); }
+		if (ImGui::Button(light[2].GetIsLightOn() ? "Turn Light 3 off" : "Turn Light 3 on")) { ToggleLight(2); }
 		DrawIMGuiLightOffsetSlider(2, "Light 3 Offset");
-		if (ImGui::Button(light[3]->GetIsLightOn() ? "Turn Light 4 off" : "Turn Light 4 on")) { ToggleLight(3); }
+		if (ImGui::Button(light[3].GetIsLightOn() ? "Turn Light 4 off" : "Turn Light 4 on")) { ToggleLight(3); }
 		DrawIMGuiLightOffsetSlider(3, "Light 4 Offset");
-		if (ImGui::Button(light[4]->GetIsLightOn() ? "Turn Light 5 off" : "Turn Light 5 on")) { ToggleLight(4); }
+		if (ImGui::Button(light[4].GetIsLightOn() ? "Turn Light 5 off" : "Turn Light 5 on")) { ToggleLight(4); }
 		DrawIMGuiLightOffsetSlider(4, "Light 5 Offset");
-		if (ImGui::Button(light[5]->GetIsLightOn() ? "Turn Light 6 off" : "Turn Light 6 on")) { ToggleLight(5); }
+		if (ImGui::Button(light[5].GetIsLightOn() ? "Turn Light 6 off" : "Turn Light 6 on")) { ToggleLight(5); }
 		DrawIMGuiLightOffsetSlider(5, "Light 6 Offset");
 		ImGui::Text("Or use keyboard keys 0, 1, 2, 3, 4, 5 to toggle respective lights.");
 		if (ImGui::Button("Reset Lights")) { ResetLights(); }
@@ -133,17 +114,17 @@ void LightObjects::InstantiateLightPositionsAndColours()
 		lightBasePositions[i] = basePositions[i];
 		lightsOffsetVector[i] = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
-	light[0] = new Light(lightBasePositions[0], defaultLightColour * lightFactor, defaultRadius, 1.0f);
-	light[1] = new Light(lightBasePositions[1], defaultLightColour * lightFactor, defaultRadius, 1.0f);
-	light[2] = new Light(lightBasePositions[2], defaultLightColour * lightFactor, defaultRadius, 1.0f);
-	light[3] = new Light(lightBasePositions[3], defaultLightColour * lightFactor, defaultRadius, 1.0f);
-	light[4] = new Light(lightBasePositions[4], defaultLightColour * lightFactor, defaultRadiusForCloserLights, 1.0f);	//Bottom
-	light[5] = new Light(lightBasePositions[5], defaultLightColour * lightFactor, defaultRadiusForCloserLights, 1.0f);	//Top
+	light[0] = Light(lightBasePositions[0], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[1] = Light(lightBasePositions[1], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[2] = Light(lightBasePositions[2], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[3] = Light(lightBasePositions[3], defaultLightColour * lightFactor, defaultRadius, 1.0f);
+	light[4] = Light(lightBasePositions[4], defaultLightColour * lightFactor, defaultRadiusForCloserLights, 1.0f);	//Bottom
+	light[5] = Light(lightBasePositions[5], defaultLightColour * lightFactor, defaultRadiusForCloserLights, 1.0f);	//Top
 }
 
 void LightObjects::ToggleLight(int index)
 {
-	light[index]->SetIsLightOn(light[index]->GetIsLightOn() ? 0.0f : 1.0f);
+	light[index].SetIsLightOn(light[index].GetIsLightOn() ? 0.0f : 1.0f);
 }
 
 void LightObjects::DrawIMGuiLightOffsetSlider(int lightIndex, std::string label)
@@ -156,18 +137,18 @@ void LightObjects::ResetLights()
 {
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
-		light[i]->SetIsLightOn(1.0f);
+		light[i].SetIsLightOn(1.0f);
 		lightsOffsetVector[i] = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 		lightColours[i] = defaultLightColour;
-		light[i]->SetColour(defaultLightColour);
-		light[i]->SetRadius(MAX_LIGHTS - i > 2 ? defaultRadius : defaultRadiusForCloserLights);
+		light[i].SetColour(defaultLightColour);
+		light[i].SetRadius(MAX_LIGHTS - i > 2 ? defaultRadius : defaultRadiusForCloserLights);
 		moveLights = false;
 	}
 }
 
 void LightObjects::SetLightColour()
 {
-	for (int i = 0; i < MAX_LIGHTS; i++) { light[i]->SetColour(lightColours[i] * lightFactor); }
+	for (int i = 0; i < MAX_LIGHTS; i++) { light[i].SetColour(lightColours[i] * lightFactor); }
 }
 
 void LightObjects::DrawLightColourSlider()
@@ -184,48 +165,11 @@ void LightObjects::DrawLightColourSlider()
 
 void LightObjects::DrawLightAttenuationSlider()
 {
-	ImGui::SliderFloat("Light 1 Attenuation", &light[0]->GetRadiusReference(), 0.0f, 30.0f);
-	ImGui::SliderFloat("Light 2 Attenuation", &light[1]->GetRadiusReference(), 0.0f, 30.0f);
-	ImGui::SliderFloat("Light 3 Attenuation", &light[2]->GetRadiusReference(), 0.0f, 30.0f);
-	ImGui::SliderFloat("Light 4 Attenuation", &light[3]->GetRadiusReference(), 0.0f, 30.0f);
-	ImGui::SliderFloat("Light 5 Attenuation", &light[4]->GetRadiusReference(), 0.0f, 30.0f);
-	ImGui::SliderFloat("Light 6 Attenuation", &light[5]->GetRadiusReference(), 0.0f, 30.0f);
+	ImGui::SliderFloat("Light 1 Attenuation", &light[0].GetRadiusReference(), 0.0f, 30.0f);
+	ImGui::SliderFloat("Light 2 Attenuation", &light[1].GetRadiusReference(), 0.0f, 30.0f);
+	ImGui::SliderFloat("Light 3 Attenuation", &light[2].GetRadiusReference(), 0.0f, 30.0f);
+	ImGui::SliderFloat("Light 4 Attenuation", &light[3].GetRadiusReference(), 0.0f, 30.0f);
+	ImGui::SliderFloat("Light 5 Attenuation", &light[4].GetRadiusReference(), 0.0f, 30.0f);
+	ImGui::SliderFloat("Light 6 Attenuation", &light[5].GetRadiusReference(), 0.0f, 30.0f);
 
-}
-
-void LightObjects::UploadLightsDataToGPU()
-{
-	float data[MAX_LIGHTS * 12];
-	unsigned int sizeOfFloat = (unsigned int)sizeof(float);
-	int index = 0;
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
-		data[index] = light[i]->GetLightSwitchAndRadius().x;
-		index++;
-		data[index] = light[i]->GetLightSwitchAndRadius().y;
-		index++;
-		data[index] = light[i]->GetLightSwitchAndRadius().z;
-		index++;
-		data[index] = light[i]->GetLightSwitchAndRadius().w;
-		index++;
-
-		data[index] = light[i]->GetPosition().x;
-		index++;
-		data[index] = light[i]->GetPosition().y;
-		index++;
-		data[index] = light[i]->GetPosition().z;
-		index++;
-		data[index] = light[i]->GetPosition().w;
-		index++;
-
-		data[index] = light[i]->GetColour().x;
-		index++;
-		data[index] = light[i]->GetColour().y;
-		index++;
-		data[index] = light[i]->GetColour().z;
-		index++;
-		data[index] = light[i]->GetColour().w;
-		index++;
-	}
-	lightUBO->UploadData(&data[0], sizeof(data), 0);
 }
