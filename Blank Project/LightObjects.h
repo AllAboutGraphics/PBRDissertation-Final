@@ -43,4 +43,5 @@ class LightObjects : public ObjectRepresentable
 		void SetLightColour();
 		void DrawLightColourSlider();
 		void DrawLightAttenuationSlider();
+		void UploadLightsDataToGPU();
 };

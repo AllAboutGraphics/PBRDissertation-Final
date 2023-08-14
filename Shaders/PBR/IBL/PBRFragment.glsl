@@ -28,10 +28,10 @@ struct LightData
 
 layout(std140) uniform LightsData
 {
-//    LightData lightData[6];
-    vec4 lightSwitchAndRadius[6];
-    vec4 lightPositions[6];
-    vec4 lightColors[6];
+    LightData lightData[6];
+//    vec4 lightSwitchAndRadius[6];
+//    vec4 lightPositions[6];
+//    vec4 lightColors[6];
 };
 
 uniform vec3 camPos;
@@ -144,12 +144,12 @@ vec4 PBR()
     vec3 Lo = vec3(0.0);
     for(int i = 0; i < 6; ++i) 
     {
-        if(lightSwitchAndRadius[i].x == 0) { continue; }
-        vec3 lightDirVector   = normalize(lightPositions[i].xyz - WorldPos);
+        if(lightData[i].lightSwitchAndRadius.x == 0) { continue; }
+        vec3 lightDirVector   = normalize(lightData[i].lightPositions.xyz - WorldPos);
         vec3 halfwayDirVector = normalize(viewDirVector + lightDirVector);
-        float distance        = length(lightPositions[i].xyz - WorldPos);
+        float distance        = length(lightData[i].lightPositions.xyz - WorldPos);
         float attenuation = 1.0 / (distance * distance);
-        vec3 radiance = lightColors[i].xyz * attenuation;
+        vec3 radiance = lightData[i].lightColors.xyz * attenuation;
 
         float NDF = DistributionGGX(normalVector, halfwayDirVector, roughness);   
         float G   = GeometrySmith(normalVector, viewDirVector, lightDirVector, roughness);    
@@ -204,22 +204,22 @@ vec4 PhongShading()
     vec4 finalColour;
     for(int i = 0; i < 6; i++)
     {
-        psLightColours[i].x = lightColors[i].x / 300.0;
-        psLightColours[i].y = lightColors[i].y / 300.0;
-        psLightColours[i].z = lightColors[i].z / 300.0;
+        psLightColours[i].x = lightData[i].lightColors.x / 300.0;
+        psLightColours[i].y = lightData[i].lightColors.y / 300.0;
+        psLightColours[i].z = lightData[i].lightColors.z / 300.0;
     }
     for(int i = 0 ; i < 6 ; i++)
     {
-        if(lightSwitchAndRadius[i].x == 0) { continue; }
-        vec3 incident	  = normalize(lightPositions[i].xyz - WorldPos);
+        if(lightData[i].lightSwitchAndRadius.x == 0) { continue; }
+        vec3 incident	  = normalize(lightData[i].lightPositions.xyz - WorldPos);
 	    vec3 viewDir	  = normalize(camPos - WorldPos);
 	    vec3 halfDir	  = normalize(incident + viewDir);
 
 	    //Diffuse
 	    vec4 diffuse	  = texture(albedoMap, TexCoords);
 	    float lambert	  = max(dot(incident, Normal), 0.0);
-	    float dist		  = length(lightPositions[i].xyz - WorldPos);
-	    float attenuation = 1.0 - clamp(dist / lightSwitchAndRadius[i].y, 0.0, 1.0);
+	    float dist		  = length(lightData[i].lightPositions.xyz - WorldPos);
+	    float attenuation = 1.0 - clamp(dist / lightData[i].lightSwitchAndRadius.y, 0.0, 1.0);
 
 	    //Specularity
 	    float specFactor  = clamp(dot(halfDir, Normal), 0.0, 1.0);

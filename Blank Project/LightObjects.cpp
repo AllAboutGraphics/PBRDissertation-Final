@@ -16,13 +16,13 @@ LightObjects::~LightObjects()
 	}
 }
 
-struct NewLightStruct
-{
-	Vector4 lightSwitchAndRadius[MAX_LIGHTS];
-	Vector4 lightPositions[MAX_LIGHTS];
-	Vector4 lightColors[MAX_LIGHTS];
-};
-NewLightStruct newLightData;
+//struct NewLightStruct
+//{
+//	Vector4 lightSwitchAndRadius[MAX_LIGHTS];
+//	Vector4 lightPositions[MAX_LIGHTS];
+//	Vector4 lightColors[MAX_LIGHTS];
+//};
+//NewLightStruct newLightData;
 void LightObjects::Draw()
 {
 	static float acceleration = 0.0f;
@@ -43,7 +43,7 @@ void LightObjects::Draw()
 		}
 	}
 	
-	int idx = 0;
+	/*int idx = 0;
 	for (Light* lgt : light)
 	{
 		newLightData.lightPositions[idx] = lgt->GetPosition();
@@ -51,7 +51,8 @@ void LightObjects::Draw()
 		newLightData.lightSwitchAndRadius[idx] = lgt->GetLightSwitchAndRadius();
 		idx++;
 	}
-	lightUBO->UploadData(&newLightData, sizeof(newLightData), 0);
+	lightUBO->UploadData(&newLightData, sizeof(newLightData), 0);*/
+	UploadLightsDataToGPU();
 }
 
 void LightObjects::DrawLightObject(Matrix4 transformationMatrix, Vector4 currLightColour)
@@ -190,4 +191,41 @@ void LightObjects::DrawLightAttenuationSlider()
 	ImGui::SliderFloat("Light 5 Attenuation", &light[4]->GetRadiusReference(), 0.0f, 30.0f);
 	ImGui::SliderFloat("Light 6 Attenuation", &light[5]->GetRadiusReference(), 0.0f, 30.0f);
 
+}
+
+void LightObjects::UploadLightsDataToGPU()
+{
+	float data[MAX_LIGHTS * 12];
+	unsigned int sizeOfFloat = (unsigned int)sizeof(float);
+	int index = 0;
+	for (int i = 0; i < MAX_LIGHTS; i++)
+	{
+		data[index] = light[i]->GetLightSwitchAndRadius().x;
+		index++;
+		data[index] = light[i]->GetLightSwitchAndRadius().y;
+		index++;
+		data[index] = light[i]->GetLightSwitchAndRadius().z;
+		index++;
+		data[index] = light[i]->GetLightSwitchAndRadius().w;
+		index++;
+
+		data[index] = light[i]->GetPosition().x;
+		index++;
+		data[index] = light[i]->GetPosition().y;
+		index++;
+		data[index] = light[i]->GetPosition().z;
+		index++;
+		data[index] = light[i]->GetPosition().w;
+		index++;
+
+		data[index] = light[i]->GetColour().x;
+		index++;
+		data[index] = light[i]->GetColour().y;
+		index++;
+		data[index] = light[i]->GetColour().z;
+		index++;
+		data[index] = light[i]->GetColour().w;
+		index++;
+	}
+	lightUBO->UploadData(&data[0], sizeof(data), 0);
 }
