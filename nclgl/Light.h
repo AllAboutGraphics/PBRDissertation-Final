@@ -40,6 +40,8 @@ class Light
 		bool GetIsLightOn()						  { return lightData.lightSwitchAndRadius.x != 0.0f; }
 		void SetIsLightOn(const float& islightOn) { lightData.lightSwitchAndRadius.x = islightOn; }
 
+		Vector4& GetLightSwitchAndRadius() { return lightData.lightSwitchAndRadius; }
+
 	protected:
 		LightData lightData;
 };

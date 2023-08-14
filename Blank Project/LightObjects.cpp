@@ -16,6 +16,13 @@ LightObjects::~LightObjects()
 	}
 }
 
+struct NewLightStruct
+{
+	Vector4 lightSwitchAndRadius[MAX_LIGHTS];
+	Vector4 lightPositions[MAX_LIGHTS];
+	Vector4 lightColors[MAX_LIGHTS];
+};
+NewLightStruct newLightData;
 void LightObjects::Draw()
 {
 	static float acceleration = 0.0f;
@@ -29,12 +36,22 @@ void LightObjects::Draw()
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "isUsingPhongModel"), renderer->GetCurrentModel());
 		glUniform1f(glGetUniformLocation(shader->GetProgram(), "specularityPower"), specularityPower);
 		
-		lightUBO->UploadData(&light[i][0], sizeof(LightData), i * sizeof(LightData));
+		//lightUBO->UploadData(&light[i][0], sizeof(LightData), i * sizeof(LightData));
 		if (light[i]->GetIsLightOn())
 		{
 			DrawLightObject(Matrix4::Translation(lightPosition.ToVector3()) * Matrix4::Scale(Vector3(0.5f, 0.5f, 0.5f)), lightColours[i]);
 		}
 	}
+	
+	int idx = 0;
+	for (Light* lgt : light)
+	{
+		newLightData.lightPositions[idx] = lgt->GetPosition();
+		newLightData.lightColors[idx] = lgt->GetColour();
+		newLightData.lightSwitchAndRadius[idx] = lgt->GetLightSwitchAndRadius();
+		idx++;
+	}
+	lightUBO->UploadData(&newLightData, sizeof(newLightData), 0);
 }
 
 void LightObjects::DrawLightObject(Matrix4 transformationMatrix, Vector4 currLightColour)
