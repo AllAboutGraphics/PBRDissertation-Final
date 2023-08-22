@@ -27,6 +27,7 @@ unsigned int Textures::LoadTexture(const char* fileName, std::unordered_map<unsi
 	glGenTextures(1, &textureID);
 
 	int width, height, nrComponents;
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(fileName, &width, &height, &nrComponents, 0);
 	if (data)
 	{
@@ -45,6 +46,7 @@ unsigned int Textures::LoadTexture(const char* fileName, std::unordered_map<unsi
 		SetTextureParameters(parametersMap);
 
 		stbi_image_free(data);
+		stbi_set_flip_vertically_on_load(false);
 	}
 	else
 	{
@@ -70,6 +72,7 @@ unsigned int Textures::LoadHDREnvironmentMap(const char* fileName, std::unordere
 		SetTextureParameters(parametersMap);
 
 		stbi_image_free(data);
+		stbi_set_flip_vertically_on_load(false);
 	}
 	else
 	{
