@@ -13,7 +13,7 @@ class LightObjects : public ObjectRepresentable
 		~LightObjects();
 		void Draw();
 		void DrawLightObject(Matrix4 transformationMatrix, Vector4 currLightColour);
-		void HandleEvents();
+		void HandleEvents(float dt);
 		void UpdateShaderReference(Shader* shaderRef) { shader = shaderRef; }
 		void ImGuiRender(bool shouldShow = true) override;
 		void HandleTextureEvents() override;
@@ -35,6 +35,7 @@ class LightObjects : public ObjectRepresentable
 
 		//unsigned int	   lightsUBO;
 		UniformBufferObject* lightUBO;
+		float updatedDt = 0.0f;
 
 		void InstantiateLightPositionsAndColours();
 		void ToggleLight(int index);

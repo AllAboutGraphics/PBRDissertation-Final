@@ -17,12 +17,13 @@ LightObjects::~LightObjects()
 void LightObjects::Draw()
 {
 	static float acceleration = 0.0f;
-	acceleration += 2.0f;
+	acceleration += updatedDt;// 2.0f;
+	if (acceleration > 360.0f) { acceleration = 0.0f; }
 	if (!moveLights) { acceleration = 0; }
 	for (int i = 0; i < MAX_LIGHTS; i++)
 	{
 		renderer->BindShaderDelegate(shader);
-		Vector4		lightPosition = lightBasePositions[i] + lightsOffsetVector[i] + Vector4((moveLights ? sin(acceleration * 0.01f) * 10.0f : 0.0f), 0.0f, 0.0f, 0.0f);
+		Vector4		lightPosition = lightBasePositions[i] + lightsOffsetVector[i] + Vector4((moveLights ? sin(acceleration) * 10.0f : 0.0f), 0.0f, 0.0f, 0.0f);
 		light[i].SetPosition(lightPosition);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "isUsingPhongModel"), renderer->GetCurrentModel());
 		glUniform1f(glGetUniformLocation(shader->GetProgram(), "specularityPower"), specularityPower);
@@ -47,8 +48,9 @@ void LightObjects::DrawLightObject(Matrix4 transformationMatrix, Vector4 currLig
 	lightSphereMesh->Draw();
 }
 
-void LightObjects::HandleEvents()
+void LightObjects::HandleEvents(float dt)
 {
+	updatedDt = dt;
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_L)) { moveLights = !moveLights; }
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_0)) { ToggleLight(0); }
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1)) { ToggleLight(1); }

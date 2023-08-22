@@ -83,7 +83,7 @@ void Renderer::RenderScene()
 void Renderer::UpdateScene(float dt)
 {
 	HandleRenderObjectEvents();
-	lightObjects->HandleEvents();
+	lightObjects->HandleEvents(dt);
 	currentSelectedObject->HandleTextureEvents();
 	camera->UpdateCamera(dt, currentSelectedObject == sphereGrid || currentObject == All);
 	viewMatrix = camera->BuildViewMatrix();
